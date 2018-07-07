@@ -14,3 +14,9 @@
 $app->get('/', function () use ($app) {
     return $app->version();
 });
+
+$app->get('my-ip/', 'IdentificationController@getMyIp');
+$app->post('network-ip/', 'IdentificationController@postNetworkIp');
+$app->post('file-upload/', 'FileController@uploadFile');
+$app->post('save-file/', 'SaveFileController@saveFile');
+

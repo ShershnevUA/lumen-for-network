@@ -23,7 +23,9 @@ $app = new Laravel\Lumen\Application(
     realpath(__DIR__.'/../')
 );
 
-// $app->withFacades();
+ $app->withFacades();
+ $app->configure('filesystems');
+ class_alias('Illuminate\Support\Facades\Storage', 'Storage');
 
 // $app->withEloquent();
 
@@ -47,6 +49,8 @@ $app->singleton(
     Illuminate\Contracts\Console\Kernel::class,
     App\Console\Kernel::class
 );
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -77,7 +81,7 @@ $app->singleton(
 | totally optional, so you are not required to uncomment this line.
 |
 */
-
+$app->register(Illuminate\Filesystem\FilesystemServiceProvider::class);
 // $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
