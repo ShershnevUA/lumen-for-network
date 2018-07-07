@@ -50,17 +50,25 @@ class FileController extends Controller
     {
         $storageId = $request->query('storage_id');
         $file = $this->findFileInfo( $storageId );
-
-        $client = new \GuzzleHttp\Client();
-        $response = $client->request('GET', 'http://' . $file['storage'] . '/get-file?storage_id=' . $storageId);
-        if( 200 === $response->getStatusCode()){
-            $this->writeNetworkLog( 'File ' . $storageId . ' was found. Start decrypt' );
-            $fileContent = json_decode($response->getBody()->getContents(),true )['data'];
-            return ( new Response( [ 'file_content' => $this->decryptFile($fileContent) ] ) );
-        }else{
-            return ( new Response( $response ) )
-                ->header('Content-Type', 'application/json' );
+        if ( false === $file){
+            return ( new Response([
+                'Message' => 'Not found'
+            ], 404 ))->header('Content-Type', 'application/json' );
         }
+        $client = new \GuzzleHttp\Client();
+
+        try {
+            $response = $client->request('GET', 'http://' . $file['storage'] . '/get-file?storage_id=' . $storageId);
+        } catch (GuzzleException $e) {
+            return ( new Response([
+                'Message' => 'Not found'
+            ], 404 ))->header('Content-Type', 'application/json' );
+        }
+
+        $this->writeNetworkLog( 'File ' . $storageId . ' was found. Start decrypt' );
+        $fileContent = json_decode($response->getBody()->getContents(),true )['data'];
+        return ( new Response( [ 'file_content' => $this->decryptFile($fileContent) ] ) );
+
     }
 
     private function encryptFile($file)

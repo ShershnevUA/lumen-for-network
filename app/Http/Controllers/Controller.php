@@ -33,7 +33,13 @@ class Controller extends BaseController
 
     protected function findFileInfo( $storageId )
     {
+        if( !Storage::exists('files.json')){
+            return false;
+        }
         $file = json_decode( Storage::get('files.json'), true );
-        return $file[$storageId];
+        if ( array_key_exists( $storageId, $file )){
+            return $file[$storageId];
+        }
+        return false;
     }
 }
