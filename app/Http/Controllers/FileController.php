@@ -53,12 +53,14 @@ class FileController extends Controller
 
         $client = new \GuzzleHttp\Client();
         $response = $client->request('GET', 'http://' . $file['storage'] . '/get-file?storage_id=' . $storageId);
-
-
-        $fileContent = json_decode($response->getBody()->getContents(),true )['data'];
-        $this->writeNetworkLog( 'File ' . $storageId . ' was found. Start decrypt' );
-        return ( new Response( [ 'file_content' => $this->decryptFile($fileContent) ] ) )
-            ->header('Content-Type', 'application/json' );
+        if( 200 === $response->getStatusCode()){
+            $this->writeNetworkLog( 'File ' . $storageId . ' was found. Start decrypt' );
+            $fileContent = json_decode($response->getBody()->getContents(),true )['data'];
+            return ( new Response( [ 'file_content' => $this->decryptFile($fileContent) ] ) );
+        }else{
+            return ( new Response( $response ) )
+                ->header('Content-Type', 'application/json' );
+        }
     }
 
     private function encryptFile($file)

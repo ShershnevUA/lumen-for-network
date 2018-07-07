@@ -23,7 +23,7 @@ class Controller extends BaseController
     protected function writeFileInfo( $fileInfo )
     {
         if (!Storage::exists( 'files.json' )){
-            Storage::put( 'files.json', $fileInfo . "\n" );
+            Storage::put( 'files.json', json_encode( [$fileInfo['storageId'] => $fileInfo], JSON_PRETTY_PRINT ) . "\n" );
         }else {
             $file = json_decode( Storage::get( 'files.json' ), true );
             $file[$fileInfo['storageId']] = $fileInfo;
