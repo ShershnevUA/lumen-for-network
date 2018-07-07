@@ -18,17 +18,10 @@ class FileController
     public function uploadFile(Request $request){
         $fileData =  $this->encryptFile(file_get_contents($request->file('file')));
         $file = json_decode(Storage::get('network.json'));
-        $client = new \GuzzleHttp\Client([
-            'base_uri' => 'http://' . $file[0],
-        ]);
+        var_dump('http://' . $file[0]);
+        $client = new \GuzzleHttp\Client();
 
-        $response = $client->post('/save-file', [
-            'debug' => TRUE,
-            'body' => $fileData,
-            'headers' => [
-                'Content-Type' => 'application/json',
-            ]
-        ]);
+        $response = $client->request('PUT','http://' . $file[0] . '/save-file', ['body' => ['data' => $fileData],]);
         return ( new Response( $response->getBody() ) )
             ->header('Content-Type', 'application/json' );
     }
