@@ -17,6 +17,11 @@ $app->get('/', function () use ($app) {
 
 $app->get('my-ip/', 'IdentificationController@getMyIp');
 $app->post('network-ip/', 'IdentificationController@postNetworkIp');
+
 $app->post('file-upload/', 'FileController@uploadFile');
-$app->post('save-file/', 'SaveFileController@saveFile');
+$app->get('read-file/', 'FileController@getMyFile');
+
+$app->post('save-file/', 'FileStorageController@saveFile');
+$app->get('get-file/', 'FileStorageController@getFile');
+
 
